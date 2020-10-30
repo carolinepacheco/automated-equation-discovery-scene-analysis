@@ -1,4 +1,4 @@
-# equation_discovery_scene_analysis
+# Equation Discovery Scene Analysis
 
 
 ##  Prerequisites
