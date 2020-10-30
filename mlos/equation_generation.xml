@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<job xmlns="urn:proactive:jobdescriptor:3.12" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" maxNumberOfExecution="2" name="equation_generation" onTaskError="continueJobExecution" priority="normal" projectName="1.  Hyperparameter Optimization" xsi:schemaLocation="urn:proactive:jobdescriptor:3.12 http://www.activeeon.com/public_content/schemas/proactive/jobdescriptor/3.12/schedulerjob.xsd">
+  <variables>
+    <variable model="PA:Boolean" name="DOCKER_ENABLED" value="True"/>
+    <variable model="PA:Boolean" name="DOCKER_GPU_ENABLED" value="True"/>
+    <variable model="PA:LIST(,GPU)" name="NODE_ACCESS_TOKEN" value=""/>
+    <variable name="INPUT_VARIABLES" value="{&quot;DEC_DROPOUT&quot;: 0.02, &quot;DEC_HIDDEN&quot;: 512,   &quot;DEC_LAYERS&quot;: 6, &quot;ENC_DROPOUT&quot;: 0.01, &quot;ENC_HIDDEN&quot;: 512,   &quot;ENC_LAYERS&quot;: 4,  &quot;N_BATCH&quot;: 32,  &quot;OPTIMIZER&quot;: &quot;optim.RMSprop&quot;, &quot;LEARNING_RATE&quot;: 0.005}"/>
+    <variable name="SEARCH_SPACE" value="[{&quot;ENC_HIDDEN&quot;: choice([125, 256, 512]),          &quot;DEC_HIDDEN&quot;: choice([512, 800]),          &quot;ENC_LAYERS&quot;: choice([1, 2, 4, 6]), &quot;DEC_LAYERS&quot;: choice([1, 2, 4, 6]),          &quot;ENC_DROPOUT&quot;: choice([0.01, 0.02, 0.01, 0.1, 0.2]),           &quot;DEC_DROPOUT&quot;: choice([0.01, 0.02, 0.01, 0.1, 0.2]),            &quot;N_BATCH&quot;: choice([32, 64, 512]),    &quot;LEARNING_RATE&quot;: choice([0.001, 0.005]),    &quot;OPTIMIZER&quot;: choice(['optim.Adam', 'optim.Adadelta', 'optim.RMSprop']) }]"/>
+  </variables>
+  <description>
+    <![CDATA[ Trains a vae instance to generate valid and unique equations. ]]>
+  </description>
+  <genericInformation>
+<info name="bucketName" value="caroline"/>
+<info name="workflow.icon" value="/automation-dashboard/styles/patterns/img/wf-icons/keras.png"/>
+<info name="NODE_ACCESS_TOKEN" value="$NODE_ACCESS_TOKEN"/>
+<info name="Documentation" value="MLOS/MLOSUserGuide.html#_objective_ml_examples"/>
+<info name="group" value="public-objects"/>
+</genericInformation>
+  <taskFlow>
+    <task fork="true" name="equation_generation">
+      <description>
+        <![CDATA[ Trains a vae instance to generate valid and unique equations. ]]>
+      </description>
+      <variables>
+        <variable inherited="true" name="TOKEN" value="{&quot;_token_id&quot;: 0}"/>
+        <variable inherited="false" name="DATA_PATH" value="https://activeeon-public.s3.eu-west-2.amazonaws.com/datasets/data.txt"/>
+        <variable inherited="true" model="PA:Boolean" name="VISDOM_ENABLED" value="False"/>
+        <variable inherited="false" name="MOUNT_LOG_PATH" value="/media/andrews/storage1tb/tmp/"/>
+        <variable inherited="false" name="DOCKER_LOG_PATH" value="/tmp"/>
+        <variable inherited="false" name="ENC_HIDDEN" value="125"/>
+        <variable inherited="false" name="DEC_HIDDEN" value="512"/>
+        <variable inherited="false" name="ENC_LAYERS" value="6"/>
+        <variable inherited="false" name="DEC_LAYERS" value="1"/>
+        <variable inherited="false" name="ENC_DROPOUT" value="0.1"/>
+        <variable inherited="false" name="DEC_DROPOUT" value="0.05"/>
+        <variable inherited="false" name="N_BATCH" value="32"/>
+        <variable inherited="false" name="OPTIMIZER" value="RMSprop"/>
+        <variable inherited="false" name="LEARNING_RATE" value="0.005"/>
+      </variables>
+      <genericInformation>
+        <info name="task.icon" value="/automation-dashboard/styles/patterns/img/wf-icons/keras.png"/>
+        <info name="task.documentation" value="MLOS/MLOSUserGuide.html#_objective_ml_examples"/>
+      </genericInformation>
+      <forkEnvironment javaHome="/usr">
+        <envScript>
+          <script>
+            <file language="groovy" url="${PA_CATALOG_REST_URL}/buckets/scripts/resources/fork_env_docker_cuda_v4/raw"/>
+          </script>
+        </envScript>
+      </forkEnvironment>
+      <pre>
+        <script>
+          <code language="groovy">
+            <![CDATA[
+params_encoded = variables.get('params_encoded')
+token_encoded = variables.get('token_encoded')
+
+// If encoded variables are found
+if ((params_encoded != null && params_encoded.length() > 0) &&
+    (token_encoded != null && token_encoded.length() > 0))
+{
+    println "Found encoded variables:"
+    println "params_encoded: " + params_encoded
+    println "token_encoded: " + token_encoded
+    
+    byte[] params_decoded = params_encoded.decodeBase64()
+    byte[] token_decoded = token_encoded.decodeBase64()
+    
+    input_variables = new String(params_decoded)
+    token = new String(token_decoded)
+    
+    variables.put('INPUT_VARIABLES', input_variables)
+    variables.put('TOKEN', token)
+}
+]]>
+          </code>
+        </script>
+      </pre>
+      <scriptExecutable>
+        <script>
+          <file language="cpython" url="${PA_CATALOG_REST_URL}/buckets/caroline-script/resources/equation_generation/raw"/>
+        </script>
+      </scriptExecutable>
+      <metadata>
+        <positionTop>
+            147.515625
+        </positionTop>
+        <positionLeft>
+            419.5625
+        </positionLeft>
+      </metadata>
+    </task>
+  </taskFlow>
+  <metadata>
+    <visualization>
+      <![CDATA[ <html>
+    <head>
+    <link rel="stylesheet" href="/studio/styles/studio-standalone.css">
+        <style>
+        #workflow-designer {
+            left:0 !important;
+            top:0 !important;
+            width:2742px;
+            height:2940px;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="workflow-visualization-view"><div id="workflow-visualization" style="position:relative;top:-142.515625px;left:-414.5625px"><div class="task _jsPlumb_endpoint_anchor_ ui-draggable active-task" id="jsPlumb_1_1113" style="top: 147.516px; left: 419.562px;"><a class="task-name" data-toggle="tooltip" data-placement="right" title="Trains a vae instance to generate valid and unique equations."><img src="/automation-dashboard/styles/patterns/img/wf-icons/keras.png" width="20px">&nbsp;<span class="name">equation_generation</span></a></div><div class="_jsPlumb_endpoint source-endpoint dependency-source-endpoint connected _jsPlumb_endpoint_anchor_ ui-draggable ui-droppable" style="position: absolute; height: 20px; width: 20px; left: 473px; top: 178px;"><svg style="position:absolute;left:0px;top:0px" width="20" height="20" pointer-events="all" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><circle cx="10" cy="10" r="10" version="1.1" xmlns="http://www.w3.org/1999/xhtml" fill="#666" stroke="none" style=""></circle></svg></div></div></div>
+    </body>
+</html>
+ ]]>
+    </visualization>
+  </metadata>
+</job>
