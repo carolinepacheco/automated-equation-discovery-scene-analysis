@@ -13,4 +13,6 @@ Make sure you have installed all of the following prerequisites on your developm
 
 * BGSLibrary: pip install pybgs
 
-* chocolate: pip install git+https://github.com/AIworx-Labs/chocolate@master
+* Chocolate: pip install git+https://github.com/AIworx-Labs/chocolate@master
+
+* Numba
