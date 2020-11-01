@@ -15,6 +15,5 @@ class sample():
                 samples.extend(current_samples)
                 n -= len(current_samples)
                 T.update(len(current_samples))
-        # samples = pd.DataFrame(samples, columns=['SMILES'])
         samples = pd.DataFrame(samples, columns=['EQUATIONS'])
         return samples
