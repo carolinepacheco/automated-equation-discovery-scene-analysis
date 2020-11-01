@@ -19,7 +19,6 @@
 ((ZoC)o(ZoC)o(ZoC)o(ZoC))
 (ZoCoa)
 ((ZoC)o(ZoC)o(ZoC)o(ZoC)o(ZoC))
-""
 ((ZoC)o(ZoC)o(ZoC))
 ((CoC)o(ZoC)o(ZoC))
 ((Zoa)o(ZoC)o(ZoC)o(ZoC)o(ZoC))
@@ -101,7 +100,6 @@ ZoCoa
 (aoC)
 (ooCoa)
 (ZoCo(ZoC)o(ZoC))
-""
 ((ZoC)o(ZoC)o(ZoC))oa
 ((ZoC)o(ZoC)o(ZoC)o(aoC))
 (ZoCoo(ZoC)o(ZoC)o(ZoC)o(ZoC)o(ZoC)o(ZoC))oa
