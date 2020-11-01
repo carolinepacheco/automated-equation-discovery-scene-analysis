@@ -1,4 +1,4 @@
-# Equation Discovery Scene Analysis
+# Equation Discovery for Visual Scene Analysis
 
 
 ##  Prerequisites
