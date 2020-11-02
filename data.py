@@ -1,6 +1,6 @@
 import torch
 
-filename = 'dataset/data.txt'
+filename = 'dataset/equations.txt'
 raw_text = open(filename, 'r', encoding='utf-8').read()
 lines = raw_text.split('\n')
 train_data = [item for item in lines if item != '']
