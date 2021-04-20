@@ -38,5 +38,5 @@ Make sure you have installed all of the following prerequisites on your developm
  
 Please to run the  equation_mutation.py script use the command below :
 ```
-python equation_mutation.py -m -f dataset/mutate.txt -i $dataset/skiting/input -g $dataset/skiting/groundtruth -r 0.15
+python equation_mutation.py -m -f dataset/mutate.txt -i dataset/skiting/input -g dataset/skiting/groundtruth -r 0.15
 ```
